@@ -1,0 +1,160 @@
+<?php
+// Ajax以外からのアクセスを遮断
+$request = isset($_SERVER['HTTP_X_REQUESTED_WITH']) ? strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) : '';
+if($request !== 'xmlhttprequest') exit;
+
+// Session
+session_start();
+
+if(!isset($_SESSION['member_login']))
+{
+	header('Location:../index.php');
+	exit();
+}
+
+require_once('../common/common.php');
+
+//
+//  timecd :　タイムカード番号(半角)
+//
+//  mes :　メール内容
+//  
+//  err :   0   ：エラーなし
+//          1   ：DB接続エラー
+//            
+//
+//header("Content-Type:text/html; charset=utf-8");
+//console.log($_POST);
+
+/*
+$ary = json_decode($_POST['Ary']);
+
+for($i=0; $i<count($ary); $i++)
+{
+	for($j=0; $j<count($ary[i]); $j++)
+	{
+		//$ary[i][j]を利用してなんか処理
+	}
+}
+
+*/
+
+
+
+
+
+
+
+
+
+$json = file_get_contents('php://input');
+//$data=json_decode($json);
+
+
+
+
+/*
+$error_no=0;
+$honbun="";
+
+$db_id = isset($data['timecard'])       ? $data['timecard']     : "";
+$db_name = isset($data['name'])       ? $data['name']     : "";
+$db_scode = isset($data['shaincode'])       ? $data['shaincode']     : "";
+$db_kubun = isset($data['kubun'])       ? $data['kubun']     : "";
+$db_date1 = isset($data['date1'])       ? $data['date1']     : "";
+$db_time1 = isset($data['time1'])       ? $data['time1']     : "";
+$db_time2 = isset($data['time2'])       ? $data['time2']     : "";
+$db_jiyu = isset($data['jiyu'])       ? $data['jiyu']     : "";
+$db_email = $_SESSION['member_email'];
+
+$callback  = isset($_GET['callback'])   ? $_GET["callback"] : "";
+$callback  = htmlspecialchars(strip_tags($callback));
+
+try
+{ 
+*/    
+//  データベース接続
+/*    include '../common/conection.php';
+
+	$dbh=new PDO($dsn,$user,$password);
+	$dbh->query('SET NAMES utf8');
+
+    $sql='LOCK TABLES dat_todoke WRITE';
+    $stmt=$dbh->prepare($sql);
+    $stmt->execute();
+    
+	$sql='INSERT INTO dat_todoke(timecard,shaincode,name,kubun,date1,time1,time2,jiyu) VALUES (?,?,?,?,?,?,?,?)';
+	$stmt=$dbh->prepare($sql);
+    $dbdata[]=$db_id;
+	$dbdata[]=$db_scode;
+	$dbdata[]=$db_name;
+	$dbdata[]=$db_kubun;
+	$dbdata[]=$db_date1;
+    $dbdata[]=$db_time1;
+    $dbdata[]=$db_time2;
+	$dbdata[]=$db_jiyu;
+	$stmt->execute($dbdata);
+
+    $sql='UNLOCK TABLES';
+    $stmt=$dbh->prepare($sql);
+    $stmt->execute();
+
+	$dbh=null;
+*/    
+//    メールタイトル、ヘッダー   //
+/*
+    $title=todoke;
+    
+    $header = "MIME-Version: 1.0\n";
+    $header .='From:'.$db_email."\n";
+    $header .= "Reply-To:".$db_email."\n";
+    $header .= "Return-Path:".$db_email."\n";
+    $header .= "Content-Transfer-Encoding: 7bit\n";
+    $header .= "Content-Type: text/plain; charset=ISO-2022-JP\n";
+    $header .= "Message-Id: <" . md5(uniqid(microtime())) . "@boushiya.co.jp>\n";
+    $header .= "X-Mailer: PHP/". phpversion();
+*/    
+//  メール 本文  //    
+/*
+    $honbun='';
+    $honbun.='【 '.$title." 】\n\n";
+    $honbun.='タイムカード番号：'.$db_id."\n";
+    $honbun.='社員番号：'.$db_scode."\n";
+    $honbun.='社員名：'.$db_name."\n\n";
+    $honbun.='区分：　打刻修正 ('.$db_kubun.")\n\n";
+    $honbun.='期間：'.date('Y年m月d日',strtotime($db_date1));
+    $honbun.='     '.$db_time1.' → '.$db_time2."\n\n";
+    $honbun.='事由：'.$db_jiyu."\n\n";
+    
+    $honbun=html_entity_decode($honbun,ENT_QUOTES,'UTF-8');
+    
+    mb_language('Japanese');
+    mb_internal_encoding('UTF-8');
+*/    
+//  自店宛てメール //
+/*    
+    $email=$db_email;
+    mb_send_mail($email,$title,$honbun,$header);
+*/   
+//  経理宛てメール //
+/*    
+    $email=keri_mail_address;
+    mb_send_mail($email,$title,$honbun,$header);
+*/
+// メール内容 //
+/*   
+}
+catch(exception $e)
+
+{
+	$error_no=1;
+}
+*/
+
+$param = array( "mes" => "OK" , "err" => "NG");
+
+header('Content-Type: application/json; charset=utf-8');
+echo sprintf(json_encode($param));
+
+
+?>
